@@ -42,14 +42,14 @@ export default async function handler(req, res) {
   // Fix this + queries object? How should people add or alter queries?
   const adoptionStats = {
     Time: Date.now(),
-    SnarkyJS: await getNumberOfResults(queries.SnarkyJS),
-    Circom: await getNumberOfResults(queries.Circom),
-    Leo: await getNumberOfResults(queries.Leo),
-    Noir: await getNumberOfResults(queries.Noir),
-    Cairo: await getNumberOfResults(queries.Cairo),
-    RISC0: await getNumberOfResults(queries.RISC0),
-    ZoKrates: await getNumberOfResults(queries.ZoKrates),
-    Gnark: await getNumberOfResults(queries.Gnark),
+    SnarkyJS: 244,
+    Circom: 1325,
+    Leo: 115,
+    Noir: 38,
+    Cairo: 10900,
+    RISC0: 116,
+    ZoKrates: 19,
+    Gnark: 1211,
   };
 
   await doc.loadInfo(); // loads sheets
