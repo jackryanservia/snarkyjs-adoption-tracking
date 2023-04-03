@@ -6,20 +6,19 @@ const doc = new GoogleSpreadsheet(
 );
 
 const queries = {
-  SnarkyJS: "snarkyjs",
-  // Circom: 'circom',
-  // Leo: 'leo',
-  // Noir: 'noir',
-  // Cairo: 'cairo',
-  // RISC0: 'risc0',
-  // ZoKrates: 'zokrates',
-  // Gnark: 'gnark'
+  SnarkyJS: '"keywords" "mina zkapp": filename:package.json',
+  Circom: '"component main" extension:circom',
+  Leo: '"aleo" filename:program.json',
+  Noir: '"noir-lang" "aztec_backend" filename:package.json',
+  Cairo: "lang starknet extension:cairo",
+  RISC0: 'dependencies "risc0-zkp" filename:Cargo.toml',
+  ZoKrates: "zokrates",
+  Gnark: "gnark",
 };
 
 const githubHeaders = new Headers({
   Accept: "application/vnd.github+json",
-  Authorization:
-    "Bearer " + process.env.GITHUB_TOKEN,
+  Authorization: "Bearer " + process.env.GITHUB_TOKEN,
   "X-GitHub-Api-Version": "2022-11-28",
 });
 
@@ -28,13 +27,6 @@ const getNumberOfResults = (query) =>
     headers: githubHeaders,
     method: "GET",
   }).then((res) => res.json().then((data) => data.total_count));
-
-async function getAdoptionStats() {
-  const adoptionStats = await Promise.all(
-    Object.entries(queries).map(([name, query]) => getNumberOfResults(query))
-  );
-  return adoptionStats;
-}
 
 export default async function handler(req, res) {
   // Initialize Auth - see https://theoephraim.github.io/node-google-spreadsheet/#/getting-started/authentication
@@ -47,15 +39,25 @@ export default async function handler(req, res) {
     ),
   });
 
+  // Fix this + queries object? How should people add or alter queries?
+  const adoptionStats = {
+    Time: Date.now(),
+    SnarkyJS: await getNumberOfResults(queries.SnarkyJS),
+    Circom: await getNumberOfResults(queries.Circom),
+    Leo: await getNumberOfResults(queries.Leo),
+    Noir: await getNumberOfResults(queries.Noir),
+    Cairo: await getNumberOfResults(queries.Cairo),
+    RISC0: await getNumberOfResults(queries.RISC0),
+    ZoKrates: await getNumberOfResults(queries.ZoKrates),
+    Gnark: await getNumberOfResults(queries.Gnark),
+  };
+
   await doc.loadInfo(); // loads sheets
   const sheet = doc.sheetsByIndex[0]; // the first sheet
 
-  const adoptionStats = await getAdoptionStats();
-
   const newRow = await sheet.addRow({
-    Date: Date.now(),
-    SnarkyJS: adoptionStats.toString(),
+    ...adoptionStats,
   });
 
-  res.status(200).json({ name: "John Doe" });
+  res.status(200).json(adoptionStats);
 }
