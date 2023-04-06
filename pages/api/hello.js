@@ -42,14 +42,14 @@ export default async function handler(req, res) {
   // Fix this + queries object? How should people add or alter queries?
   const adoptionStats = {
     UnixTime: Date.now(),
-    SnarkyJS: 244,
-    Circom: 1325,
-    Leo: 115,
+    SnarkyJS: 253,
+    Circom: 1385,
+    Leo: 96,
     Noir: 38,
-    Cairo: 10900,
+    Cairo: 10925,
     RISC0: 116,
-    ZoKrates: 19,
-    Gnark: 1211,
+    ZoKrates: 604,
+    Gnark: 1232,
   };
 
   await doc.loadInfo(); // loads sheets
