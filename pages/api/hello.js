@@ -6,7 +6,7 @@ const doc = new GoogleSpreadsheet(
 );
 
 const queries = {
-  SnarkyJS: '"keywords" "mina zkapp": filename:package.json',
+  SnarkyJS: "path:/(^|/)package.json$/ snarkyjs",
   Circom: '"component main" extension:circom',
   Leo: '"aleo" filename:program.json',
   Noir: '"noir-lang" "aztec_backend" filename:package.json',
@@ -16,17 +16,11 @@ const queries = {
   Gnark: "gnark",
 };
 
-const githubHeaders = new Headers({
-  Accept: "application/vnd.github+json",
-  Authorization: "Bearer " + process.env.GITHUB_TOKEN,
-  "X-GitHub-Api-Version": "2022-11-28",
-});
-
 const getNumberOfResults = (query) =>
-  fetch("https://api.github.com/search/code?per_page=1&q=" + query, {
-    headers: githubHeaders,
+  fetch("https://cs.github.com/api/count?q=" + query, {
+    cookies: process.env.GITHUB_COOKIE,
     method: "GET",
-  }).then((res) => res.json().then((data) => data.total_count));
+  }).then((res) => res.json().then((data) => data.count));
 
 export default async function handler(req, res) {
   // Initialize Auth - see https://theoephraim.github.io/node-google-spreadsheet/#/getting-started/authentication
@@ -42,8 +36,7 @@ export default async function handler(req, res) {
   // Fix this + queries object? How should people add or alter queries?
   const adoptionStats = {
     UnixTime: Date.now(),
-    Time: "=EPOCHTODATE(A9, 2)",
-    SnarkyJS: 253,
+    SnarkyJS: await getNumberOfResults(query.SnarkyJS),
     Circom: 1385,
     Leo: 96,
     Noir: 38,
