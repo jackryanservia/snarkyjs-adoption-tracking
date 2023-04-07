@@ -36,7 +36,7 @@ export default async function handler(req, res) {
   // Fix this + queries object? How should people add or alter queries?
   const adoptionStats = {
     UnixTime: Date.now(),
-    SnarkyJS: await getNumberOfResults(query.SnarkyJS),
+    SnarkyJS: await getNumberOfResults(queries.SnarkyJS),
     Circom: 1385,
     Leo: 96,
     Noir: 38,
