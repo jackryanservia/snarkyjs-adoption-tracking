@@ -1,3 +1,4 @@
+import { generateBuildId } from "@/next.config";
 import { GoogleSpreadsheet } from "google-spreadsheet";
 
 // Initialize the sheet - doc ID is the long id in the sheets URL
@@ -6,19 +7,23 @@ const doc = new GoogleSpreadsheet(
 );
 
 const queries = {
-  SnarkyJS: "path:/(^|/)package.json$/ snarkyjs",
-  Circom: '"component main" extension:circom',
-  Leo: '"aleo" filename:program.json',
-  Noir: '"noir-lang" "aztec_backend" filename:package.json',
-  Cairo: "lang starknet extension:cairo",
-  RISC0: 'dependencies "risc0-zkp" filename:Cargo.toml',
-  ZoKrates: "zokrates",
-  Gnark: "gnark",
+  SnarkyJS: "path%3A%2F%28%5E%7C%5C%2F%29package%5C.json%24%2F+snarkyjs",
+  Circom: "path%3A%2F%28%5E%7C%5C%2F%29package%5C.json%24%2F+snarkjs",
+  Leo: "path%3A%2F%28%5E%7C%5C%2F%29program%5C.json%24%2F+leo",
+  Noir: "path%3A%2F%28%5E%7C%5C%2F%29package%5C.json%24%2F+noir-lang%2Faztec_backend",
+  Cairo: "path%3A%2F%28%5E%7C%5C%2F%29.*%5C.cairo%24%2F+lang+starknet",
+  RISC0: "path%3A%2F%28%5E%7C%5C%2F%29cargo.toml%24%2F+risc0-zkp",
+  ZoKrates: "path%3A%2F%28%5E%7C%5C%2F%29package%5C.json%24%2F+zokrates-js",
+  Gnark: "%2F%22github.com%5C%2Fconsensys%5C%2Fgnark%5C%2Ffrontend%22%2F",
 };
+
+const githubHeaders = new Headers({
+  cookie: process.env.GITHUB_COOKIE,
+});
 
 const getNumberOfResults = (query) =>
   fetch("https://cs.github.com/api/count?q=" + query, {
-    cookies: process.env.GITHUB_COOKIE,
+    headers: githubHeaders,
     method: "GET",
   }).then((res) => res.json().then((data) => data.count));
 
@@ -36,18 +41,21 @@ export default async function handler(req, res) {
   // Fix this + queries object? How should people add or alter queries?
   const adoptionStats = {
     UnixTime: Date.now(),
+    Time: "=EPOCHTODATE(INDIRECT(ADDRESS(ROW(), COLUMN()-1, 4)), 2)",
     SnarkyJS: await getNumberOfResults(queries.SnarkyJS),
-    Circom: 1385,
-    Leo: 96,
-    Noir: 38,
-    Cairo: 10925,
-    RISC0: 116,
-    ZoKrates: 604,
-    Gnark: 1232,
+    Circom: await getNumberOfResults(queries.Circom),
+    Leo: await getNumberOfResults(queries.Leo),
+    Noir: await getNumberOfResults(queries.Noir),
+    Cairo: await getNumberOfResults(queries.Cairo),
+    RISC0: await getNumberOfResults(queries.RISC0),
+    ZoKrates: await getNumberOfResults(queries.ZoKrates),
+    Gnark: await getNumberOfResults(queries.Gnark),
   };
 
   await doc.loadInfo(); // loads sheets
-  const sheet = doc.sheetsByIndex[0]; // the first sheet
+  const sheet = doc.sheetsById[0]; // the first sheet
+
+  console.log(adoptionStats.SnarkyJS);
 
   const newRow = await sheet.addRow({
     ...adoptionStats,
