@@ -18,11 +18,12 @@ const queries = {
 };
 
 const githubHeaders = new Headers({
-  cookie: process.env.GITHUB_COOKIE,
+  Accept: "application/json",
+  Cookie: process.env.GITHUB_COOKIE,
 });
 
 const getNumberOfResults = (query) =>
-  fetch("https://cs.github.com/api/count?q=" + query, {
+  fetch("https://github.com/search/blackbird_count?q=" + query, {
     headers: githubHeaders,
     method: "GET",
   }).then((res) => res.json().then((data) => data.count));
@@ -55,7 +56,7 @@ export default async function handler(req, res) {
   await doc.loadInfo(); // loads sheets
   const sheet = doc.sheetsById[0]; // the first sheet
 
-  console.log(adoptionStats.SnarkyJS);
+  console.log(adoptionStats);
 
   const newRow = await sheet.addRow({
     ...adoptionStats,
