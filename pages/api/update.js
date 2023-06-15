@@ -26,7 +26,14 @@ const getNumberOfResults = (query) =>
   fetch("https://github.com/search/blackbird_count?q=" + query, {
     headers: githubHeaders,
     method: "GET",
-  }).then((res) => res.json().then((data) => data.count));
+  }).then(
+    (res) =>
+      res.json().then(
+        (data) => data.count,
+        (error) => "INVALID_RESPONSE"
+      ),
+    console.log
+  );
 
 export default async function handler(req, res) {
   // Initialize Auth - see https://theoephraim.github.io/node-google-spreadsheet/#/getting-started/authentication
