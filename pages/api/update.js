@@ -26,13 +26,28 @@ const getNumberOfResults = (query) =>
   fetch("https://github.com/search/blackbird_count?q=" + query, {
     headers: githubHeaders,
     method: "GET",
-  }).then(
+  }).then((res) =>
+    res.json().then(
+      (data) => data.count,
+      (error) => "INVALID_RESPONSE"
+    )
+  );
+
+const getNumberOfNpmDownloads = (query) =>
+  fetch("https://api.npmjs.org/downloads/point/last-day/" + query).then((res) =>
+    res.json().then(
+      (data) => data.downloads,
+      (error) => "INVALID_RESPONSE"
+    )
+  );
+
+const getNumberOfDeployedZkApps = () =>
+  fetch("https://berkeley.minaexplorer.com/all-accounts/zkapps?length=1").then(
     (res) =>
       res.json().then(
-        (data) => data.count,
+        (data) => data.recordsTotal,
         (error) => "INVALID_RESPONSE"
-      ),
-    console.log
+      )
   );
 
 export default async function handler(req, res) {
@@ -60,14 +75,38 @@ export default async function handler(req, res) {
     Gnark: await getNumberOfResults(queries.Gnark),
   };
 
+  const npmDownloadStats = {
+    UnixTime: Date.now(),
+    Time: "=EPOCHTODATE(INDIRECT(ADDRESS(ROW(), COLUMN()-1, 4)), 2)",
+    SnarkyJS: await getNumberOfNpmDownloads("snarkyjs"),
+  };
+
+  const deployedZkAppStats = {
+    UnixTime: Date.now(),
+    Time: "=EPOCHTODATE(INDIRECT(ADDRESS(ROW(), COLUMN()-1, 4)), 2)",
+    ZkAppAccounts: await getNumberOfDeployedZkApps(),
+  };
+
   await doc.loadInfo(); // loads sheets
   const sheet = doc.sheetsById[0]; // the first sheet
+  const npmDownloadSheet = doc.sheetsById[893481103];
+  const deployedZkAppSheet = doc.sheetsById[2060459223];
 
   console.log(adoptionStats);
+  console.log(npmDownloadStats);
+  console.log(deployedZkAppStats);
 
   const newRow = await sheet.addRow({
     ...adoptionStats,
   });
 
-  res.status(200).json(adoptionStats);
+  const newNpmDownloadRow = await npmDownloadSheet.addRow({
+    ...npmDownloadStats,
+  });
+
+  const newDeployedZkAppStats = await deployedZkAppSheet.addRow({
+    ...deployedZkAppStats,
+  });
+
+  res.status(200).json({ adoptionStats, npmDownloadStats, deployedZkAppStats });
 }
