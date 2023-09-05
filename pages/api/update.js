@@ -7,6 +7,7 @@ const doc = new GoogleSpreadsheet(
 );
 
 const queries = {
+  o1js: "path%3A%2F%28%5E%7C%5C%2F%29package%5C.json%24%2F+o1js",
   SnarkyJS: "path%3A%2F%28%5E%7C%5C%2F%29package%5C.json%24%2F+snarkyjs",
   Circom: "path%3A%2F%28%5E%7C%5C%2F%29package%5C.json%24%2F+snarkjs",
   Leo: "path%3A%2F%28%5E%7C%5C%2F%29program%5C.json%24%2F+leo",
@@ -65,6 +66,7 @@ export default async function handler(req, res) {
   const adoptionStats = {
     UnixTime: Date.now(),
     Time: "=EPOCHTODATE(INDIRECT(ADDRESS(ROW(), COLUMN()-1, 4)), 2)",
+    o1js: await getNumberOfResults(queries.o1js),
     SnarkyJS: await getNumberOfResults(queries.SnarkyJS),
     Circom: await getNumberOfResults(queries.Circom),
     Leo: await getNumberOfResults(queries.Leo),
@@ -78,6 +80,7 @@ export default async function handler(req, res) {
   const npmDownloadStats = {
     UnixTime: Date.now(),
     Time: "=EPOCHTODATE(INDIRECT(ADDRESS(ROW(), COLUMN()-1, 4)), 2)",
+    o1js: await getNumberOfNpmDownloads("o1js"),
     SnarkyJS: await getNumberOfNpmDownloads("snarkyjs"),
   };
 
