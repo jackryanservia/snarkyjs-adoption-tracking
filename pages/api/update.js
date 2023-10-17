@@ -75,6 +75,7 @@ export default async function handler(req, res) {
     RISC0: await getNumberOfResults(queries.RISC0),
     ZoKrates: await getNumberOfResults(queries.ZoKrates),
     Gnark: await getNumberOfResults(queries.Gnark),
+    "o1js+SnarkyJS": "=C:C+D:D",
   };
 
   const npmDownloadStats = {
@@ -82,6 +83,7 @@ export default async function handler(req, res) {
     Time: "=EPOCHTODATE(INDIRECT(ADDRESS(ROW(), COLUMN()-1, 4)), 2)",
     o1js: await getNumberOfNpmDownloads("o1js"),
     SnarkyJS: await getNumberOfNpmDownloads("snarkyjs"),
+    "o1js+SnarkyJS": "=C:C+D:D",
   };
 
   const deployedZkAppStats = {
