@@ -10,12 +10,12 @@ const queries = {
   o1js: "path%3A%2F%28%5E%7C%5C%2F%29package%5C.json%24%2F+o1js",
   SnarkyJS: "path%3A%2F%28%5E%7C%5C%2F%29package%5C.json%24%2F+snarkyjs",
   Circom: "path%3A%2F%28%5E%7C%5C%2F%29package%5C.json%24%2F+snarkjs",
-  Leo: "path%3A%2F%28%5E%7C%5C%2F%29program%5C.json%24%2F+leo",
-  Noir: "path%3A%2F%28%5E%7C%5C%2F%29package%5C.json%24%2F+noir-lang%2Faztec_backend",
-  Cairo: "path%3A%2F%28%5E%7C%5C%2F%29.*%5C.cairo%24%2F+lang+starknet",
-  RISC0: "path%3A%2F%28%5E%7C%5C%2F%29cargo.toml%24%2F+risc0-zkp",
+  Leo: "path%3A%2F%28%5E%7C%5C%2F%29program%5C.json%24%2F+aleo",
+  Noir: "path%3A%2F%28%5E%7C%5C%2F%29Nargo%5C.toml%24%2F",
+  Cairo: "path%3A%2F%28%5E%7C%5C%2F%29Scarb%5C.toml%24%2F",
+  RISC0: "path%3A%2F%28%5E%7C%5C%2F%29cargo.toml%24%2F+risc0-zkvm",
   ZoKrates: "path%3A%2F%28%5E%7C%5C%2F%29package%5C.json%24%2F+zokrates-js",
-  Gnark: "%2F%22github.com%5C%2Fconsensys%5C%2Fgnark%5C%2Ffrontend%22%2F",
+  Gnark: "%2Fconsensys%5C%2Fgnark%5C%2Ffrontend%2F",
 };
 
 const githubHeaders = new Headers({
