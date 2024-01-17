@@ -38,7 +38,7 @@ const slackHeaders = new Headers({
 });
 
 const slackInvalidResponseMessage = {
-  channel: "C06EC25FHM0",
+  channel: "C038UN20DK8",
   blocks: [
     {
       type: "section",
