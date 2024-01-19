@@ -86,10 +86,11 @@ const postMessageToSlack = (message) =>
   });
 
 const createSlackMessageSectionBody = (heading, stats) => {
+  let ignoredKeys = ["UnixTime", "Time", "o1js+SnarkyJS"];
   let sectionBody = `*${heading}*\n`;
 
   for (const [key, value] of Object.entries(stats)) {
-    if (!IGNORED_KEYS.includes(key)) {
+    if (!ignoredKeys.includes(key)) {
       sectionBody += `>${key}: ${value}\n`;
     }
   }
