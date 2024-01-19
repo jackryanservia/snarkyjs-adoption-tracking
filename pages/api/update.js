@@ -85,37 +85,36 @@ const postMessageToSlack = (message) =>
     body: JSON.stringify(message),
   });
 
-// This is f-worded
+const createSlackMessageSectionBody = (heading, stats) => {
+  let sectionBody = `*${heading}*\n`;
+
+  for (const [key, value] of Object.entries(stats)) {
+    if (!IGNORED_KEYS.includes(key)) {
+      sectionBody += `>${key}: ${value}\n`;
+    }
+  }
+
+  return sectionBody;
+};
+
 const createSlackLogMessage = (
   adoptionStats,
   npmDownloadStats,
   deployedZkAppStats
 ) => {
-  const blocks = [];
-
   const statsObjects = [adoptionStats, npmDownloadStats, deployedZkAppStats];
   const headings = ["Github Projects", "NPM Downloads", "Berkeley"];
 
-  statsObjects.forEach((stats, index) => {
-    blocks.push({
-      type: "header",
+  const blocks = statsObjects.map((stats, index) => {
+    const sectionBody = createSlackMessageSectionBody(headings[index], stats);
+
+    return {
+      type: "section",
       text: {
-        type: "plain_text",
-        text: `${headings[index]}`,
+        type: "mrkdwn",
+        text: sectionBody,
       },
-    });
-    for (const [key, value] of Object.entries(stats)) {
-      if (key != "UnixTime" && key != "Time" && key != "o1js+SnarkyJS") {
-        blocks.push({
-          type: "section",
-          text: {
-            type: "mrkdwn",
-            text: `*${key}:* ${value}`,
-          },
-        });
-      }
-    }
-    blocks.push({ type: "divider" });
+    };
   });
 
   return { channel: "C06EC25FHM0", blocks };
