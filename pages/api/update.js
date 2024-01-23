@@ -101,20 +101,6 @@ const getNumberOfDeployedZkApps = () =>
   );
 
 // SLACK MESSAGES
-// Message in #dev-relations channel that pings @devrel_guardian and @sdk_guardian
-const slackInvalidResponseMessage = {
-  channel: "C038UN20DK8",
-  blocks: [
-    {
-      type: "section",
-      text: {
-        type: "mrkdwn",
-        text: ":frowning: The KPI dashboard recieved an invalid response from one of the API endpoints it queried. <!subteam^S062B49LKC6> <!subteam^S0448B97L22>",
-      },
-    },
-  ],
-};
-
 const formatStatsToSlackBlockKit = (heading, stats) => {
   let ignoredKeys = ["UnixTime", "Time", "o1js+SnarkyJS"];
   let sectionBody = `*${heading}*\n`;
@@ -145,6 +131,20 @@ const createSlackLogMessage = (stats) => {
 
   // Message in #kpi-dashboard-log channel
   return { channel: "C06EC25FHM0", blocks };
+};
+
+// Message in #dev-relations channel that pings @devrel_guardian and @sdk_guardian
+const slackInvalidResponseMessage = {
+  channel: "C038UN20DK8",
+  blocks: [
+    {
+      type: "section",
+      text: {
+        type: "mrkdwn",
+        text: ":frowning: The KPI dashboard recieved an invalid response from one of the API endpoints it queried. <!subteam^S062B49LKC6> <!subteam^S0448B97L22>",
+      },
+    },
+  ],
 };
 
 const postMessageToSlack = (message) =>
