@@ -130,8 +130,7 @@ const createSlackLogMessage = (stats) => {
   // TODO: This is pretty bad; maybe store these in the stats object?
   const headings = ["Github Projects", "NPM Downloads", "Berkeley"];
 
-  const blocks = Object.values(stats).forEach((stats, index) => {
-    console.log(stats);
+  const blocks = Object.values(stats).map((stats, index) => {
     const sectionBody = formatStatsToSlackBlockKit(headings[index], stats);
     console.log("sectionBody");
     console.log(sectionBody);
@@ -173,6 +172,7 @@ export default async function handler(req, res) {
   if (POST_TO_SLACK) {
     // Log stats to #kpi-dashboard-log channel
     const slackLogMessage = createSlackLogMessage(stats);
+    console.log("slackLogMessage");
     console.log(slackLogMessage);
     let res = await postMessageToSlack(slackLogMessage);
 
