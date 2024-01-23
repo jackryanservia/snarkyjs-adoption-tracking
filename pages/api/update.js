@@ -2,7 +2,7 @@ import { generateBuildId } from "@/next.config";
 import { GoogleSpreadsheet } from "google-spreadsheet";
 
 // ON/OFF SWITCHES
-const POST_TO_CONSOLE = false;
+const POST_TO_CONSOLE = true;
 const POST_TO_GOOGLE = true;
 const POST_TO_SLACK = true;
 
@@ -67,6 +67,8 @@ const getStats = async () => ({
   },
 });
 
+const INVALID_RESPONSE_MESSAGE = "INVALID_RESPONSE";
+
 const getNumberOfBlackbirdResults = (query) =>
   fetch("https://github.com/search/blackbird_count?q=" + query, {
     headers: new Headers({
@@ -77,7 +79,7 @@ const getNumberOfBlackbirdResults = (query) =>
   }).then((res) =>
     res.json().then(
       (data) => data.count,
-      (error) => "INVALID_RESPONSE"
+      (error) => INVALID_RESPONSE_MESSAGE
     )
   );
 
@@ -85,7 +87,7 @@ const getNumberOfNpmDownloads = (query) =>
   fetch("https://api.npmjs.org/downloads/point/last-day/" + query).then((res) =>
     res.json().then(
       (data) => data.downloads,
-      (error) => "INVALID_RESPONSE"
+      (error) => INVALID_RESPONSE_MESSAGE
     )
   );
 
@@ -94,7 +96,7 @@ const getNumberOfDeployedZkApps = () =>
     (res) =>
       res.json().then(
         (data) => data.recordsTotal,
-        (error) => "INVALID_RESPONSE"
+        (error) => INVALID_RESPONSE_MESSAGE
       )
   );
 
@@ -127,14 +129,11 @@ const formatStatsToSlackBlockKit = (heading, stats) => {
 };
 
 const createSlackLogMessage = (stats) => {
-  // TODO: This is pretty bad; maybe store these in the stats object?
+  // TODO: This is pretty ungood; maybe store these in the stats object?
   const headings = ["Github Projects", "NPM Downloads", "Berkeley"];
 
   const blocks = Object.values(stats).map((stats, index) => {
     const sectionBody = formatStatsToSlackBlockKit(headings[index], stats);
-    console.log("sectionBody");
-    console.log(sectionBody);
-
     return {
       type: "section",
       text: {
@@ -158,7 +157,7 @@ const postMessageToSlack = (message) =>
     body: JSON.stringify(message),
   });
 
-// Vercel API handler (a cron job runs this every day)
+// VERCEL API HANDLER
 export default async function handler(req, res) {
   // GET STATS
   // stats[sheet][column] = value
@@ -172,12 +171,10 @@ export default async function handler(req, res) {
   if (POST_TO_SLACK) {
     // Log stats to #kpi-dashboard-log channel
     const slackLogMessage = createSlackLogMessage(stats);
-    console.log("slackLogMessage");
-    console.log(slackLogMessage);
     let res = await postMessageToSlack(slackLogMessage);
 
-    // Send Slack message to #dev-relations if an API endpoints returns "INVALID_RESPONSE"
-    if (Object.values(stats).includes("INVALID_RESPONSE")) {
+    // Send Slack message to #dev-relations if an API endpoints returns INVALID_RESPONSE_MESSAGE
+    if (Object.values(stats).includes(INVALID_RESPONSE_MESSAGE)) {
       await postMessageToSlack(slackInvalidResponseMessage);
     }
   }
