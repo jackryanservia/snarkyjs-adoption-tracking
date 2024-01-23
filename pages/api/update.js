@@ -188,7 +188,6 @@ export default async function handler(req, res) {
 
     // Send Slack message to #dev-relations if an API endpoints returns INVALID_RESPONSE_MESSAGE
     if (checkNestedInvalidResponse(stats)) {
-      console.log("Invalid response from API endpoint");
       await postMessageToSlack(slackInvalidResponseMessage);
     }
   }
