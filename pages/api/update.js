@@ -143,6 +143,9 @@ const createSlackLogMessage = (stats) => {
     };
   });
 
+  console.log("yo");
+  console.log(blocks);
+
   // Message in #kpi-dashboard-log channel
   return { channel: "C06EC25FHM0", blocks };
 };
