@@ -129,7 +129,7 @@ const formatStatsToSlackBlockKit = (heading, stats) => {
 const createSlackLogMessage = (stats) => {
   const headings = ["Github Projects", "NPM Downloads", "Berkeley"];
 
-  const blocks = stats.map((stats, index) => {
+  const blocks = Object.keys(stats).forEach((stats, index) => {
     const sectionBody = formatStatsToSlackBlockKit(headings[index], stats);
 
     return {
@@ -192,17 +192,17 @@ export default async function handler(req, res) {
     const deployedZkAppSheet = spreadsheet.sheetsById[2060459223];
 
     // Add new rows
-    const newgithubProjectCountRow = await githubProjectCountSheet.addRow({
-      ...stats.githubProjectCounts,
-    });
+    const newgithubProjectCountRow = await githubProjectCountSheet.addRow(
+      stats.githubProjectCounts
+    );
 
-    const newNpmDownloadRow = await npmDownloadSheet.addRow({
-      ...stats.npmDownloadStats,
-    });
+    const newNpmDownloadRow = await npmDownloadSheet.addRow(
+      stats.npmDownloadStats
+    );
 
-    const newDeployedZkAppStats = await deployedZkAppSheet.addRow({
-      ...stats.deployedZkAppStats,
-    });
+    const newDeployedZkAppStats = await deployedZkAppSheet.addRow(
+      stats.deployedZkAppStats
+    );
   }
 
   // Return stats object (just because :)
