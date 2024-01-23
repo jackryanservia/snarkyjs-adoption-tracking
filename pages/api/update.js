@@ -171,10 +171,10 @@ export default async function handler(req, res) {
   if (POST_TO_SLACK) {
     // Log stats to #kpi-dashboard-log channel
     const slackLogMessage = createSlackLogMessage(stats);
-    let res = await postMessageToSlack(slackLogMessage);
 
     // Send Slack message to #dev-relations if an API endpoints returns INVALID_RESPONSE_MESSAGE
     if (Object.values(stats).includes(INVALID_RESPONSE_MESSAGE)) {
+      console.log("Invalid response from API endpoint");
       await postMessageToSlack(slackInvalidResponseMessage);
     }
   }
