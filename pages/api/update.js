@@ -133,6 +133,8 @@ const createSlackLogMessage = (stats) => {
   const blocks = Object.values(stats).forEach((stats, index) => {
     console.log(stats);
     const sectionBody = formatStatsToSlackBlockKit(headings[index], stats);
+    console.log("sectionBody");
+    console.log(sectionBody);
 
     return {
       type: "section",
@@ -142,9 +144,6 @@ const createSlackLogMessage = (stats) => {
       },
     };
   });
-
-  console.log("yo");
-  console.log(blocks);
 
   // Message in #kpi-dashboard-log channel
   return { channel: "C06EC25FHM0", blocks };
