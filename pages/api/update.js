@@ -127,10 +127,12 @@ const formatStatsToSlackBlockKit = (heading, stats) => {
 };
 
 const createSlackLogMessage = (stats) => {
+  // TODO: This is pretty bad; maybe store these in the stats object?
   const headings = ["Github Projects", "NPM Downloads", "Berkeley"];
 
-  const blocks = Object.keys(stats).forEach((stats, index) => {
+  const blocks = Object.keys(stats).forEach((stats, index, array) => {
     console.log(stats);
+    console.log(array);
     const sectionBody = formatStatsToSlackBlockKit(headings[index], stats);
 
     return {
