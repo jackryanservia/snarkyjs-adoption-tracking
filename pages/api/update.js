@@ -197,11 +197,11 @@ export default async function handler(req, res) {
     );
 
     const newNpmDownloadRow = await npmDownloadSheet.addRow(
-      stats.npmDownloadStats
+      stats.npmDownloads
     );
 
     const newDeployedZkAppStats = await deployedZkAppSheet.addRow(
-      stats.deployedZkAppStats
+      stats.deployedZkApps
     );
   }
 
