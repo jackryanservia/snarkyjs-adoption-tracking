@@ -130,6 +130,7 @@ const createSlackLogMessage = (stats) => {
   const headings = ["Github Projects", "NPM Downloads", "Berkeley"];
 
   const blocks = Object.keys(stats).forEach((stats, index) => {
+    console.log(stats);
     const sectionBody = formatStatsToSlackBlockKit(headings[index], stats);
 
     return {
