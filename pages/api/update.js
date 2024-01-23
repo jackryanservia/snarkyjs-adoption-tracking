@@ -172,8 +172,22 @@ export default async function handler(req, res) {
     // Log stats to #kpi-dashboard-log channel
     const slackLogMessage = createSlackLogMessage(stats);
 
+    // TODO: It seems like JS would have some fancy built in way to do this but I can't find what it is?
+    const checkNestedInvalidResponse = (obj) => {
+      for (let key in obj) {
+        if (typeof obj[key] === "object") {
+          if (checkNestedInvalidResponse(obj[key])) {
+            return true;
+          }
+        } else if (obj[key] === INVALID_RESPONSE_MESSAGE) {
+          return true;
+        }
+      }
+      return false;
+    };
+
     // Send Slack message to #dev-relations if an API endpoints returns INVALID_RESPONSE_MESSAGE
-    if (Object.values(stats).includes(INVALID_RESPONSE_MESSAGE)) {
+    if (checkNestedInvalidResponse(stats)) {
       console.log("Invalid response from API endpoint");
       await postMessageToSlack(slackInvalidResponseMessage);
     }
