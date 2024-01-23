@@ -2,7 +2,7 @@ import { generateBuildId } from "@/next.config";
 import { GoogleSpreadsheet } from "google-spreadsheet";
 
 // ON/OFF SWITCHES
-const POST_TO_CONSOLE = true;
+const POST_TO_CONSOLE = false;
 const POST_TO_GOOGLE = true;
 const POST_TO_SLACK = true;
 
@@ -169,7 +169,9 @@ export default async function handler(req, res) {
   if (POST_TO_SLACK) {
     // Log stats to #kpi-dashboard-log channel
     const slackLogMessage = createSlackLogMessage(stats);
-    await postMessageToSlack(slackLogMessage);
+    console.log(slackLogMessage);
+    let res = await postMessageToSlack(slackLogMessage);
+    console.log(res);
 
     // Send Slack message to #dev-relations if an API endpoints returns "INVALID_RESPONSE"
     if (Object.values(stats).includes("INVALID_RESPONSE")) {
@@ -192,17 +194,9 @@ export default async function handler(req, res) {
     const deployedZkAppSheet = spreadsheet.sheetsById[2060459223];
 
     // Add new rows
-    const newgithubProjectCountRow = await githubProjectCountSheet.addRow(
-      stats.githubProjectCounts
-    );
-
-    const newNpmDownloadRow = await npmDownloadSheet.addRow(
-      stats.npmDownloads
-    );
-
-    const newDeployedZkAppStats = await deployedZkAppSheet.addRow(
-      stats.deployedZkApps
-    );
+    await githubProjectCountSheet.addRow(stats.githubProjectCounts);
+    await npmDownloadSheet.addRow(stats.npmDownloads);
+    await deployedZkAppSheet.addRow(stats.deployedZkApps);
   }
 
   // Return stats object (just because :)
