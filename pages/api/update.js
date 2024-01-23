@@ -171,7 +171,6 @@ export default async function handler(req, res) {
     const slackLogMessage = createSlackLogMessage(stats);
     console.log(slackLogMessage);
     let res = await postMessageToSlack(slackLogMessage);
-    console.log(res);
 
     // Send Slack message to #dev-relations if an API endpoints returns "INVALID_RESPONSE"
     if (Object.values(stats).includes("INVALID_RESPONSE")) {
