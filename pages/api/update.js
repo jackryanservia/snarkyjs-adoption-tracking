@@ -3,8 +3,8 @@ import { GoogleSpreadsheet } from "google-spreadsheet";
 
 // ON/OFF SWITCHES
 const POST_TO_CONSOLE = true;
-const POST_TO_GOOGLE = true;
-const POST_TO_SLACK = true;
+const POST_TO_GOOGLE = false;
+const POST_TO_SLACK = false;
 
 // ENVIRONMENT VARIABLES
 // Gmail account that edits the spreadsheet
